@@ -8,8 +8,8 @@ namespace Shared.Chat
         public string Text { get; set; }
         public DateTime Created { get; set; }
         public string UserId { get; set; } // Foreign key
-        public IdentityUser User { get; set; } // Navigation property
+        public IdentityUser? User { get; set; } // Navigation property
         public Guid ChatRoomId { get; set; }
-        public ChatRoom ChatRoom { get; set; }
+        public ChatRoom? ChatRoom { get; set; }
     }
 }

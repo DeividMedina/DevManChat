@@ -6,6 +6,7 @@ using Shared.Util;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.CookiePolicy;
 using Web.Controllers;
+using Web.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +56,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => {
 
 }).AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
+
 
 var app = builder.Build();
 
@@ -89,5 +92,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}",
     new { controller = "Home", action = "Index" });
 app.MapRazorPages();
-
+app.MapHub<ChatHub>("/chat");
 app.Run();

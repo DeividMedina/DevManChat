@@ -16,3 +16,10 @@ html {
 body {
   margin-bottom: 60px;
 }
+.modal-content {
+    background-color: #0480be;
+}
+
+.modal-body {
+    background-color: #fff;
+}

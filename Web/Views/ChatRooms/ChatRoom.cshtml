@@ -1,0 +1,61 @@
+﻿@using Shared.Chat;
+
+@model ChatRoom
+
+@{
+    ViewData["Title"] = "Chat Room - " + Model.Name;
+}
+
+<div class="container">
+    <h1 class="mt-4">@Model.Name</h1>
+    <p>@Model.Description</p>
+
+    <div class="container">
+        <h1 class="mt-4">@Model.Name</h1>
+        <div class="messages" id="chatMessages">
+            <!-- Chat history will be displayed here -->
+        </div>
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
+
+<!-- Include the SignalR script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.12/signalr.min.js"></script>
+
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chat")
+        .build();
+
+    connection.start().then(() => {
+        // Load chat history on page load
+        connection.invoke("GetChatHistory", "@Model.Id")
+            .then(messages => {
+            console.log("Received messages:", messages);
+                messages.forEach(message => {
+                    const messageElement = document.createElement("div");
+                    messageElement.textContent = `${message.userId}: ${message.text}`;
+                    document.querySelector("#chatMessages").appendChild(messageElement);
+                });
+            })
+            .catch(err => console.error(err));
+
+        // Rest of your code
+    }).catch(err => console.error(err));
+
+    connection.on("ReceiveMessage", (user, message) => {
+        const messageElement = document.createElement("div");
+        messageElement.textContent = `${user}: ${message}`;
+        document.querySelector("#chatMessages").appendChild(messageElement);
+    });
+
+    function sendMessage() {
+        const message = document.getElementById("messageInput").value;
+        connection.invoke("SendMessage", "@Model.Id", message).catch(err => console.error(err));
+    }
+
+ 
+</script>

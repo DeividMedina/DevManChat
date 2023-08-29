@@ -18,10 +18,11 @@ namespace API.Controllers
         }
 
 
-        [HttpGet]
-        public IActionResult GetMessages()
+        [HttpGet("{idChatRoom}")]
+        public IActionResult GetMessages(Guid idChatRoom)
         {
             var messages = _context.ChatMessages
+                                   .Where(chat => chat.ChatRoomId == idChatRoom)
                                    .OrderByDescending(m => m.Created)
                                    .Take(50);
 

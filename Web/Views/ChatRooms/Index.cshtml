@@ -1,45 +1,64 @@
 ﻿@using Shared.Chat;
+
 <!-- Index.cshtml -->
 @model List<ChatRoom>
-@{
-    ViewData["Title"] = "Join Chat Rooms";
-}
-<div class="container">
-    <h1 class="mt-4">Chat Rooms</h1>
 
-    <ul class="list-group mt-3">
+@{
+
+    ViewData["Title"] = "Join Chat Rooms";
+
+}
+
+<div class="container">
+    <h1 class="mt-4">Chat Rooms</h1> <ul class="list-group mt-3">
         @foreach (var room in Model)
         {
             <li class="list-group-item">
                 <h5>@room.Name</h5>
                 <p>@room.Description</p>
-                <a asp-action="GetChatRoom" asp-route-idChatRoom="@room.Id" class="btn btn-primary">Go to room</a>
+                <a asp-action="ChatRoom" asp-route-idChatRoom="@room.Id" class="btn btn-primary">Go to room</a>
             </li>
         }
+
     </ul>
+    <button class="btn btn-success mt-3" id="createChatRoomButton">Create New Room</button>
 
-    <button class="btn btn-success mt-3" onclick="showCreateChatRoomPopup()">Create New Room</button>
+</div>
+<div class="modal" id="createChatRoomModal" tabindex="-1" role="dialog" aria-labelledby="createChatRoomModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createChatRoomModalLabel">Create Chat Room</h5> <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeCreateChatRoomModal()">
+                    <span aria-hidden="true">×</span>
 
-    <div id="createChatRoomPopup" class="mt-3" style="display: none;">
-        <h2>Create Chat Room</h2>
+                </button>
+            </div> <div class="modal-body">
+                <form asp-action="Create" method="post">
+                    <div class="form-group">
+                        <label for="Name">Name:</label>
 
-        <form asp-action="Create" method="post">
-            <div class="form-group">
-                <label for="Name">Name:</label>
-                <input type="text" class="form-control" id="Name" name="Name" required>
+                        <input type="text" class="form-control" id="Name" name="Name" required>
+                    </div> <div class="form-group">
+                        <label for="Description">Description:</label>
+
+                        <input type="text" class="form-control" id="Description" name="Description" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Room</button>
+
+                </form>
             </div>
-            <div class="form-group">
-                <label for="Description">Description:</label>
-                <input type="text" class="form-control" id="Description" name="Description" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Create Room</button>
-        </form>
+        </div>
     </div>
 </div>
-
 <script>
-    function showCreateChatRoomPopup() {
-        var popup = document.getElementById("createChatRoomPopup");
-        popup.style.display = "block";
+    var createChatRoomButton = document.getElementById("createChatRoomButton"); 
+    var createChatRoomModal = document.getElementById("createChatRoomModal"); 
+    createChatRoomButton.addEventListener(
+        "click", function () { 
+            createChatRoomModal.style.display = "block"; 
+        }
+    ); 
+    function closeCreateChatRoomModal() { 
+        createChatRoomModal.style.display = "none"; 
     }
 </script>

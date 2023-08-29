@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shared.Chat;
+using System.Net.Http;
 using System.Security.Claims;
 
 namespace Web.Controllers
 {
     [Route("[controller]")]
+    [Authorize]
     public class ChatRoomsController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -33,17 +36,15 @@ namespace Web.Controllers
                 return BadRequest();
             }
         }
-
         [HttpGet("{idChatRoom}")]
-        public async Task<IActionResult> GetChatRoom(Guid idChatRoom)
+        public async Task<IActionResult> ChatRoom(Guid idChatRoom)
         {
             var response = await _httpClient.GetAsync($"https://localhost:7106/api/chatroom/{idChatRoom}");
 
             if (response.IsSuccessStatusCode)
             {
                 var room = await response.Content.ReadFromJsonAsync<ChatRoom>();
-                ViewBag.RoomDetails = room; // Set the room details in ViewBag
-                return View(room);
+                return View("ChatRoom", room); // Redirect to the ChatRoom view with the 'room' object
             }
             else
             {
